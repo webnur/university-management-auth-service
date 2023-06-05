@@ -1,45 +1,57 @@
-import { createLogger, format, transports } from 'winston'
-const { combine, timestamp, label, printf } = format
+/* eslint-disable no-undef */
 import path from 'path'
+import { createLogger, format, transports } from 'winston'
+import DailyRotateFile from 'winston-daily-rotate-file'
+const { combine, timestamp, label, printf } = format
 
-// custom log format
+//Custom Log Format
+
 const myFormat = printf(({ level, message, label, timestamp }) => {
   const date = new Date(timestamp)
   const hour = date.getHours()
   const minutes = date.getMinutes()
-  const second = date.getSeconds()
-
-  return `${date.toDateString()} ${hour}:${minutes}:${second} [${label}] ${level}: ${message}`
+  const seconds = date.getSeconds()
+  return `${date.toDateString()} ${hour}:${minutes}:${seconds} } [${label}] ${level}: ${message}`
 })
 
 const logger = createLogger({
   level: 'info',
-  format: combine(label({ label: 'right meow!' }), timestamp(), myFormat),
+  format: combine(label({ label: 'PH' }), timestamp(), myFormat),
   transports: [
-    //
-    // - Write all logs with importance level of `error` or less to `error.log`
-    // - Write all logs with importance level of `info` or less to `combined.log`
-    //
     new transports.Console(),
-    new transports.File({
-      filename: path.join(process.cwd(), 'logs', 'winston', 'successes.log'),
-      level: 'info',
+    new DailyRotateFile({
+      filename: path.join(
+        process.cwd(),
+        'logs',
+        'winston',
+        'successes',
+        'phu-%DATE%-success.log'
+      ),
+      datePattern: 'YYYY-DD-MM-HH',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d',
     }),
   ],
 })
 
 const errorlogger = createLogger({
   level: 'error',
-  format: combine(label({ label: 'right meow!' }), timestamp(), myFormat),
+  format: combine(label({ label: 'PH' }), timestamp(), myFormat),
   transports: [
-    //
-    // - Write all logs with importance level of `error` or less to `error.log`
-    // - Write all logs with importance level of `info` or less to `combined.log`
-    //
     new transports.Console(),
-    new transports.File({
-      filename: path.join(process.cwd(), 'logs', 'winston', 'error.log'),
-      level: 'error',
+    new DailyRotateFile({
+      filename: path.join(
+        process.cwd(),
+        'logs',
+        'winston',
+        'successes',
+        'phu-%DATE%-error.log'
+      ),
+      datePattern: 'YYYY-DD-MM-HH',
+      zippedArchive: true,
+      maxSize: '20m',
+      maxFiles: '14d',
     }),
   ],
 })
