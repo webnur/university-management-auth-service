@@ -25,7 +25,6 @@ const createdUser: RequestHandler = catchAsync(
     await UserValidation.createUserZodSchema.parseAsync(req);
     const { user } = req.body;
     const result = await UserService.createUser(user);
-    next();
 
     // res.status(200).json({
     //   success: 'true',
@@ -39,6 +38,7 @@ const createdUser: RequestHandler = catchAsync(
       message: 'user create Successfully',
       data: result,
     });
+    next();
   }
 );
 

@@ -33,7 +33,6 @@ const createSemester: RequestHandler = catchAsync(
     const result = await AcademicSemesterService.createSemester(
       academicSemesterData
     );
-    next();
 
     // res.status(200).json({
     //   success: 'true',
@@ -46,6 +45,7 @@ const createSemester: RequestHandler = catchAsync(
       message: 'academic semester is created Successfully',
       data: result,
     });
+    next();
   }
 );
 export const AcademicSemesterController = { createSemester };
