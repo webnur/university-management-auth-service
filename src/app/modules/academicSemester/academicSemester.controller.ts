@@ -80,4 +80,22 @@ const getAllSemesters = catchAsync(
   }
 );
 
-export const AcademicSemesterController = { createSemester, getAllSemesters };
+const getSingleSemester = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const result = await AcademicSemesterService.getSingleSemester(id);
+    sendResponse<IAcademicSemester>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'single semester received successfully ',
+      data: result,
+    });
+    next();
+  }
+);
+
+export const AcademicSemesterController = {
+  createSemester,
+  getAllSemesters,
+  getSingleSemester,
+};
