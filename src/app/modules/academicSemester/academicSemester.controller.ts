@@ -1,4 +1,4 @@
-import { RequestHandler, Request, Response, NextFunction } from 'express';
+import { RequestHandler, Request, Response } from 'express';
 import { AcademicSemesterService } from './academicSemester.service';
 import { AcademicSemesterValidation } from './acdemicSemester.validation';
 import catchAsync from '../../../shared/catchAsync';
@@ -29,7 +29,7 @@ import { academicSemesterFilterableField } from './academicSemester.constant';
 // };
 
 const createSemester: RequestHandler = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     await AcademicSemesterValidation.createAcademicSemesterZodSchema.parseAsync(
       req
     );
@@ -49,68 +49,55 @@ const createSemester: RequestHandler = catchAsync(
       message: 'academic semester is created Successfully',
       data: result,
     });
-    next();
   }
 );
 
-const getAllSemesters = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    // const paginationOptions = {
-    //   page: Number(req.query.page),
-    //   limit: Number(req.query.limit),
-    //   sortBy: req.query.sortBy,
-    //   sortOrder: req.query.sortOrder,
-    // };
+const getAllSemesters = catchAsync(async (req: Request, res: Response) => {
+  // const paginationOptions = {
+  //   page: Number(req.query.page),
+  //   limit: Number(req.query.limit),
+  //   sortBy: req.query.sortBy,
+  //   sortOrder: req.query.sortOrder,
+  // };
 
-    const filters = pick(req.query, academicSemesterFilterableField);
-    const paginationOptions = pick(req.query, paginationFields);
+  const filters = pick(req.query, academicSemesterFilterableField);
+  const paginationOptions = pick(req.query, paginationFields);
 
-    const result = await AcademicSemesterService.getAllSemesters(
-      filters,
-      paginationOptions
-    );
-    sendResponse<IAcademicSemester[]>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'semester received successfully ',
-      meta: result.meta,
-      data: result.data,
-    });
-    next();
-  }
-);
+  const result = await AcademicSemesterService.getAllSemesters(
+    filters,
+    paginationOptions
+  );
+  sendResponse<IAcademicSemester[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'semester received successfully ',
+    meta: result.meta,
+    data: result.data,
+  });
+});
 
-const getSingleSemester = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    const result = await AcademicSemesterService.getSingleSemester(id);
-    sendResponse<IAcademicSemester>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'single semester received successfully ',
-      data: result,
-    });
-    next();
-  }
-);
+const getSingleSemester = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await AcademicSemesterService.getSingleSemester(id);
+  sendResponse<IAcademicSemester>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'single semester received successfully ',
+    data: result,
+  });
+});
 
-const updateSemester = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
-    const updatedData = req.body;
-    const result = await AcademicSemesterService.updateSemester(
-      id,
-      updatedData
-    );
-    sendResponse<IAcademicSemester>(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'semester updated successfully ',
-      data: result,
-    });
-    next();
-  }
-);
+const updateSemester = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const updatedData = req.body;
+  const result = await AcademicSemesterService.updateSemester(id, updatedData);
+  sendResponse<IAcademicSemester>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'semester updated successfully ',
+    data: result,
+  });
+});
 
 export const AcademicSemesterController = {
   createSemester,

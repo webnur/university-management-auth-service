@@ -1,4 +1,4 @@
-import { RequestHandler, Request, Response, NextFunction } from 'express';
+import { RequestHandler, Request, Response } from 'express';
 import { UserService } from './user.service';
 import { UserValidation } from './user.validation';
 import catchAsync from '../../../shared/catchAsync';
@@ -21,7 +21,7 @@ import sendResponse from '../../../shared/sendResponse';
 // }
 
 const createdUser: RequestHandler = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     await UserValidation.createUserZodSchema.parseAsync(req);
     const { user } = req.body;
     const result = await UserService.createUser(user);
@@ -38,7 +38,6 @@ const createdUser: RequestHandler = catchAsync(
       message: 'user create Successfully',
       data: result,
     });
-    next();
   }
 );
 
