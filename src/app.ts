@@ -4,6 +4,7 @@ const app: Application = express();
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import routers from './app/routes';
 import httpStatus from 'http-status';
+// import { generateFacultyId } from './app/modules/user/user.utils';
 
 app.use(cors());
 //parser
@@ -29,5 +30,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   });
   next();
 });
+
+// const testId = async () => {
+//   const testId = await generateFacultyId();
+//   console.log(testId);
+// };
+// testId();
 app.use(globalErrorHandler);
 export default app;
