@@ -1,6 +1,5 @@
 import { RequestHandler, Request, Response } from 'express';
 import { UserService } from './user.service';
-import { UserValidation } from './user.validation';
 import catchAsync from '../../../shared/catchAsync';
 import httpStatus from 'http-status';
 import sendResponse from '../../../shared/sendResponse';
@@ -45,7 +44,6 @@ import sendResponse from '../../../shared/sendResponse';
 
 const createdStudent: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    await UserValidation.createUserZodSchema.parseAsync(req);
     const { student, ...userData } = req.body;
     const result = await UserService.createStudent(student, userData);
 
@@ -64,4 +62,18 @@ const createdStudent: RequestHandler = catchAsync(
   }
 );
 
-export const UserController = { createdStudent };
+const createFaculty: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const { faculty, ...userData } = req.body;
+    const result = await UserService.createFaculty(faculty, userData);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'create faculty Successfully',
+      data: result,
+    });
+  }
+);
+
+export const UserController = { createdStudent, createFaculty };
