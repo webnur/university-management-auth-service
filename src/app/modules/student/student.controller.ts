@@ -51,6 +51,7 @@ const updateStudent = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteStudent = catchAsync(async (req: Request, res: Response) => {
+  // this id is student id not mongodb _id
   const { id } = req.params;
   const result = await StudentService.deleteStudent(id);
   sendResponse<IStudent>(res, {

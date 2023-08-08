@@ -80,6 +80,7 @@ const updateStudent = async (
   id: string,
   payload: Partial<IStudent>
 ): Promise<IStudent | null> => {
+  // this id is student id not mongodb _id
   const isExist = await Student.findOne({ id });
   if (!isExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Student not found!');
