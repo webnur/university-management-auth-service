@@ -103,7 +103,7 @@ const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
   const isExist = await Admin.findOne({ id });
 
   if (!isExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Faculty not found !');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found !');
   }
 
   const session = await mongoose.startSession();
@@ -113,7 +113,7 @@ const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
     //delete student first
     const student = await Admin.findOneAndDelete({ id }, { session });
     if (!student) {
-      throw new ApiError(404, 'Failed to delete student');
+      throw new ApiError(404, 'Failed to delete Admin');
     }
     //delete user
     await User.deleteOne({ id });
