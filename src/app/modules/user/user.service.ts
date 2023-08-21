@@ -18,31 +18,6 @@ import { Faculty } from '../faculty/faculty.model';
 import { IAdmin } from '../admin/admin.interface';
 import { Admin } from '../admin/admin.model';
 
-// export const createUser = async (user: IUser): Promise<IUser | null> => {
-//   //auto generate incremental id
-
-//   const academicSemester = {
-//     code: '01',
-//     year: '2025',
-//   };
-
-//   const id = await generateStudentId(academicSemester);
-//   user.id = id;
-//   // default password
-//   if (!user.password) {
-//     user.password = config.default_user_password as string;
-//   }
-//   const createdUser = await User.create(user);
-//   if (!createdUser) {
-//     throw new ApiError(400, 'Failed to Create user');
-//   }
-//   return createdUser;
-// };
-
-// export const UserService = {
-//   createUser,
-// };
-
 const createStudent = async (
   student: IStudent,
   user: IUser
@@ -51,6 +26,13 @@ const createStudent = async (
   if (!user.password) {
     user.password = config.default_student_password as string;
   }
+
+  //hash password
+  // user.password = await bcrypt.hash(
+  //   user.password,
+  //   Number(config.bcrypt_salt_rounds)
+  // );
+
   // set role
   user.role = 'student';
 
@@ -122,6 +104,13 @@ const createFaculty = async (
   if (!user.password) {
     user.password = config.default_student_password as string;
   }
+
+  //hash password
+  // user.password = await bcrypt.hash(
+  //   user.password,
+  //   Number(config.bcrypt_salt_rounds)
+  // );
+
   // set role
   user.role = 'faculty';
 
@@ -183,6 +172,12 @@ const createAdmin = async (
   if (!user.password) {
     user.password = config.default_student_password as string;
   }
+  //hash password
+  // user.password = await bcrypt.hash(
+  //   user.password,
+  //   Number(config.bcrypt_salt_rounds)
+  // );
+
   // set role
   user.role = 'admin';
 
