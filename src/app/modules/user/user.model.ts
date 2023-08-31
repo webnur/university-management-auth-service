@@ -4,11 +4,15 @@ import { IUser, UserModel } from './users.interface';
 import bcrypt from 'bcrypt';
 import config from '../../../config';
 
-const usersSchema = new Schema<IUser>(
+const usersSchema = new Schema<IUser, Record<string, never>>(
   {
     id: { type: String, required: true, unique: true },
     role: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: 0 },
+    needsPasswordChange: {
+      type: Boolean,
+      default: true,
+    },
     student: { type: Schema.Types.ObjectId, ref: 'Student' },
     faculty: { type: Schema.Types.ObjectId, ref: 'Faculty' },
     admin: { type: Schema.Types.ObjectId, ref: 'Admin' },
@@ -38,4 +42,42 @@ usersSchema.pre('save', async function (next) {
   next();
 });
 
+usersSchema.statics.isUserExist = async function (
+  id: string
+): Promise<Pick<
+  IUser,
+  'id' | 'password' | 'role' | 'needsPasswordChange'
+> | null> {
+  return await User.findOne(
+    { id },
+    { id: 1, password: 1, role: 1, needsPasswordChange: 1 }
+  );
+};
+
+usersSchema.statics.isPasswordMatched = async function (
+  givenPassword: string,
+  savedPassword: string
+): Promise<boolean> {
+  return await bcrypt.compare(givenPassword, savedPassword);
+};
+
 export const User = model<IUser, UserModel>('User', usersSchema);
+
+// usersSchema.methods.isUserExist = async function (
+//   id: string
+// ): Promise<Partial<IUser> | null> {
+//   const user = await User.findOne(
+//     { id },
+//     { id: 1, password: 1, role: 1, needsPasswordChange: 1 }
+//   );
+
+//   return user;
+// };
+
+// usersSchema.methods.isPasswordMatched = async function (
+//   givenPassword: string,
+//   savedPassword: string
+// ): Promise<boolean> {
+//   const isMatched = await bcrypt.compare(givenPassword, savedPassword);
+//   return isMatched;
+// };
