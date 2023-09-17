@@ -51,24 +51,23 @@ const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
   }
 
   // Match Password
-
   if (
     isUserExist.password &&
     !(await User.isPasswordMatched(password, isUserExist.password))
   ) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'password is incorrect!');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect');
   }
 
   // create access token and refresh token
   const { id: userId, role, needsPasswordChange } = isUserExist;
   const accessToken = jwtHelpers.createToken(
-    { id: userId, role: role },
+    { userId, role },
     config.jwt.secret as Secret,
     config.jwt.jwt_expires_in as string
   );
 
   const refreshToken = jwtHelpers.createToken(
-    { id: isUserExist?.id, role: isUserExist?.role },
+    { userId, role },
     config.jwt.refresh_secret as Secret,
     config.jwt.jwt_refresh_expires_in as string
   );
@@ -94,6 +93,7 @@ const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
 };
 
 const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
+  // verify token
   // invalid token - synchronous
   let verifiedToken = null;
   try {
@@ -107,9 +107,9 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   }
 
   // checking deleted user's refresh token
-  const { id } = verifiedToken;
+  const { userId } = verifiedToken;
 
-  const isUserExist = await User.isUserExist(id);
+  const isUserExist = await User.isUserExist(userId);
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'user docs not exist');
   }

@@ -4,7 +4,8 @@ import { IUser, UserModel } from './users.interface';
 import bcrypt from 'bcrypt';
 import config from '../../../config';
 
-const usersSchema = new Schema<IUser, Record<string, never>>(
+// Record<string, never>
+const usersSchema = new Schema<IUser, UserModel>(
   {
     id: { type: String, required: true, unique: true },
     role: { type: String, required: true },
@@ -31,17 +32,6 @@ const usersSchema = new Schema<IUser, Record<string, never>>(
 //   next();
 // });
 
-// password hashing hook
-usersSchema.pre('save', async function (next) {
-  // hashing user password
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds)
-  );
-  next();
-});
-
 usersSchema.statics.isUserExist = async function (
   id: string
 ): Promise<Pick<
@@ -60,6 +50,17 @@ usersSchema.statics.isPasswordMatched = async function (
 ): Promise<boolean> {
   return await bcrypt.compare(givenPassword, savedPassword);
 };
+
+// password hashing hook
+usersSchema.pre('save', async function (next) {
+  // hashing user password
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds)
+  );
+  next();
+});
 
 export const User = model<IUser, UserModel>('User', usersSchema);
 
